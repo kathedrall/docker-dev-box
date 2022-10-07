@@ -1,0 +1,78 @@
+version: '3'
+
+services:
+
+  # Servidor web NGINX
+  web:
+    container_name: ${PROJECT_NAME}-web
+    image: nginx:alpine
+    working_dir: /src
+    ports:
+      - "${PROJECT_PORT}:80"
+    networks:
+      - app_network
+    volumes:
+      - ../src:/src
+      - ./conf/nginx:/etc/nginx/conf.d
+    depends_on:
+      - php
+
+  # PHP-FPM
+  php:
+    container_name: ${PROJECT_NAME}-php
+    build: ./build/php
+    working_dir: /src
+    env_file:
+      - ../src/.env
+    networks:
+      - app_network
+    expose:
+      - 9000
+    volumes:
+      - ../src:/src
+      - ./conf/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./conf/php/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+
+  # Banco de dados Mysql
+  mysql:
+    container_name: ${PROJECT_NAME}-mysql
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - ./database/mysql:/var/lib/mysql
+    networks:
+      - app_network
+
+  # VSCode (code-server)
+  vscode:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: ${PROJECT_NAME}-vscode
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Sao_Paulo
+      - DEFAULT_WORKSPACE=/config/src
+      - PASSWORD=${VSCODE_USER_PASS}              #optional
+      # - HASHED_PASSWORD=${VSCODE_USER_PASS}     #optional
+      # - SUDO_PASSWORD=${VSCODE_ROOT_PASS}       #optional
+      # - SUDO_PASSWORD_HASH=${VSCODE_USER_PASS}  #optional
+      # - PROXY_DOMAIN=${VSCODE_PROXY_DOMAIN}     #optional
+    volumes:
+      - ../vscode:/config
+      - ../src:/config/src
+    depends_on:
+      - php
+      - web
+    ports:
+      - 8443:8443
+    networks:
+      - app_network
+
+networks:
+  app_network:

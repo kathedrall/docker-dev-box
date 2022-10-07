@@ -1,0 +1,13 @@
+# Ignora os arquivos .env
+docker/.env
+src/.env
+
+# Ignora os arquivos de database
+docker/database/mysql/*
+
+# Ignora os arquivos do container do vscode
+vscode/
+
+# Ignora arquivos das IDEs
+.vscode
+.idea
