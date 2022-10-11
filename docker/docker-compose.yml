@@ -2,27 +2,6 @@ version: '3'
 
 services:
 
-  nats:
-    container_name: ${PROJECT_NAME}-nats
-    image: nats:latest    
-    restart: unless-stopped
-    ports:
-        - "${NATS_PORT}:4222"
-    networks:
-      - app_network  
-
-  # Banco de dados de memoria Redis
-  redis:
-    container_name: ${PROJECT_NAME}-redis
-    image: redis:latest
-    command: redis-server --save 60 1 --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81 --loglevel 
-    volumes:
-      - ./database/redis:/data
-    ports:
-      - "${REDIS_PORT}:6379"
-    networks:
-      - app_network  
-
   # Servidor web NGINX
   web:
     container_name: ${PROJECT_NAME}-web
@@ -56,7 +35,6 @@ services:
       - ./conf/php/memory.ini:/usr/local/etc/php/conf.d/memory.ini
       - ./conf/php/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini
       - ./conf/php/apcu.ini:/usr/local/etc/php/conf.d/apcu.ini
-  
 
   # Banco de dados Mysql
   mysql:
@@ -74,6 +52,28 @@ services:
     networks:
       - app_network
 
+  # Messageria NATS
+  nats:
+    container_name: ${PROJECT_NAME}-nats
+    image: nats:latest    
+    restart: unless-stopped
+    ports:
+        - "${NATS_PORT}:4222"
+    networks:
+      - app_network  
+
+  # Banco de dados de memoria Redis
+  redis:
+    container_name: ${PROJECT_NAME}-redis
+    image: redis:latest
+    command: redis-server --save 60 1 --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81 --loglevel 
+    volumes:
+      - ./database/redis:/data
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - app_network  
+
   # VSCode (code-server)
   vscode:
     image: lscr.io/linuxserver/code-server:latest
@@ -83,11 +83,11 @@ services:
       - PGID=1000
       - TZ=America/Sao_Paulo
       - DEFAULT_WORKSPACE=/config/src
-      - PASSWORD=${VSCODE_USER_PASS}              #optional
-      # - HASHED_PASSWORD=${VSCODE_USER_PASS}     #optional
-      # - SUDO_PASSWORD=${VSCODE_ROOT_PASS}       #optional
-      # - SUDO_PASSWORD_HASH=${VSCODE_USER_PASS}  #optional
-      # - PROXY_DOMAIN=${VSCODE_PROXY_DOMAIN}     #optional
+      - PASSWORD=${VSCODE_USER_PASS}                   #optional
+      # - HASHED_PASSWORD=${VSCODE_USER_HASH_PASS}     #optional
+      # - SUDO_PASSWORD=${VSCODE_ROOT_PASS}            #optional
+      # - SUDO_PASSWORD_HASH=${VSCODE_USER_HASH_PASS}  #optional
+      # - PROXY_DOMAIN=${VSCODE_PROXY_DOMAIN}          #optional
     volumes:
       - ../vscode:/config
       - ../src:/config/src
