@@ -32,6 +32,9 @@ services:
       - ../src:/src
       - ./conf/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
       - ./conf/php/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+      - ./conf/php/memory.ini:/usr/local/etc/php/conf.d/memory.ini
+      - ./conf/php/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini
+      - ./conf/php/apcu.ini:/usr/local/etc/php/conf.d/apcu.ini
 
   # Banco de dados Mysql
   mysql:
