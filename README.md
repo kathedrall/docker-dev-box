@@ -3,7 +3,7 @@
 Este projeto tem como objetivo ser um ambiente de desenvolvimento completo para aplicações Web contendo até o momento:
 
 - Servidor NGINX
-- PHP
+- PHP 8.1
 - MySQL
 - VSCode server
 
