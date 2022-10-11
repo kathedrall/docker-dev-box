@@ -18,7 +18,7 @@ RUN apk add --no-cache $PHPIZE_DEPS \
     && docker-php-ext-enable apcu \
     && docker-php-ext-enable ds
 
-RUN apk add --no-cache composer
+RUN apk add git --no-cache composer
 
 VOLUME "/src"
 
