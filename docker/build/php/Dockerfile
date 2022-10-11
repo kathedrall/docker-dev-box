@@ -4,7 +4,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 RUN docker-php-ext-install mysqli \
     && docker-php-ext-install bcmath \  
-    && docker-php-ext-install opcache 
+    && docker-php-ext-install opcache \
+    && docker-php-ext-install pdo_mysql
 
 
 RUN apk add --no-cache $PHPIZE_DEPS \
@@ -14,7 +15,8 @@ RUN apk add --no-cache $PHPIZE_DEPS \
     && pecl install redis \
     && docker-php-ext-enable xdebug \
     && docker-php-ext-enable redis \
-    && docker-php-ext-enable apcu
+    && docker-php-ext-enable apcu \
+    && docker-php-ext-enable ds
 
 RUN apk add --no-cache composer
 
