@@ -26,6 +26,9 @@ Neste ponto você já deve ter o servidor rodando na porta 80 configurada no arq
 
 **Nota:** Lembre-se de configurar uma senha forte para limitar o acesso ao VSCode.
 
+Seu codigo estara sendo mapeado via volumes (storage) no docker. Voce ira poder acessa lo pelo terminal do vscode online, ou conectando no container App-Name-php
+O Container App-Name-vscode ja esta com git instalado, facilitando o acesso a repositorios.
+
 ## XDebug no VSCode
 Para debugar no VSCode use as seguintes configurações:
 ```
@@ -46,5 +49,16 @@ Para conectar seu cliente favorito de Mysql, Redis ou Nats, consulte o ip do seu
     ipconfig em um terminal de windows
     sudo ifconfig em um terminal de linux
 ```
+## Chave ssh 
+Quando compilar o projeto, um container ira gerar uma chave ssh para voce se conectar a um repositorio git,mysql e onde mais desejar.
+Para encontrar o caminho da chave 
+```
+    Menu File / Open File 
+    Navegue ate o diretorio /config/.ssh/
+    Abra o arquivo id_rsa.pub e copie a chave publica
+
+    Ps. O Projeto ira gerar uma nova chave se voce limpar as imagens do docker.
+    Ps2. Por padrao, a chave ira vir configurada com o email dev@dev. Para alterar para seu email, 
+    acesse o diretorio docker/key/Dockerfile, recompile o projeto para ter a nova chave ssh.
 
 
