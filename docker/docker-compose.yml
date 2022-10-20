@@ -2,18 +2,28 @@ version: '3'
 
 services:
 
+  key:
+    container_name: ${PROJECT_NAME}-key
+    build: ./build/key
+    working_dir: /tmp
+    networks:
+      - app_network
+    volumes:
+      - keys-data:/tmp 
+     
+
   # Servidor web NGINX
   web:
     container_name: ${PROJECT_NAME}-web
     image: nginx:alpine
-    working_dir: /src
     ports:
-      - "${PROJECT_PORT}:80"
+      - ${PROJECT_PORT}:80
     networks:
       - app_network
-    volumes:
-      - ../src:/src
+    volumes:      
+      - project-data:/src/public
       - ./conf/nginx:/etc/nginx/conf.d
+     
     depends_on:
       - php
 
@@ -21,20 +31,19 @@ services:
   php:
     container_name: ${PROJECT_NAME}-php
     build: ./build/php
-    working_dir: /src
-    env_file:
-      - ../src/.env
     networks:
       - app_network
     expose:
       - 9000
     volumes:
-      - ../src:/src
+      - keys-data:/config/.ssh 
+      - project-data:/src/public
       - ./conf/php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
       - ./conf/php/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
       - ./conf/php/memory.ini:/usr/local/etc/php/conf.d/memory.ini
       - ./conf/php/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini
       - ./conf/php/apcu.ini:/usr/local/etc/php/conf.d/apcu.ini
+     
 
   # Banco de dados Mysql
   mysql:
@@ -46,9 +55,9 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "${MYSQL_PORT}:3306"
+      - ${MYSQL_PORT}:3306
     volumes:
-      - ./database/mysql:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
     networks:
       - app_network
 
@@ -58,7 +67,7 @@ services:
     image: nats:latest    
     restart: unless-stopped
     ports:
-        - "${NATS_PORT}:4222"
+        - ${NATS_PORT}:4222
     networks:
       - app_network  
 
@@ -68,15 +77,15 @@ services:
     image: redis:latest
     command: redis-server --save 60 1 --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81 --loglevel 
     volumes:
-      - ./database/redis:/data
+      - redis-data:/data
     ports:
-      - "${REDIS_PORT}:6379"
+      - ${REDIS_PORT}:6379
     networks:
       - app_network  
 
   # VSCode (code-server)
   vscode:
-    image: lscr.io/linuxserver/code-server:latest
+    build: ./build/code
     container_name: ${PROJECT_NAME}-vscode
     environment:
       - PUID=1000
@@ -90,14 +99,29 @@ services:
       # - PROXY_DOMAIN=${VSCODE_PROXY_DOMAIN}          #optional
     volumes:
       - ../vscode:/config
-      - ../src:/config/src
+      - project-data:/config/src
+      - keys-data:/config/.ssh  
     depends_on:
       - php
       - web
     ports:
-      - 8443:8443
+      - ${VSCODE_PORT}:8443
     networks:
       - app_network
 
 networks:
   app_network:
+
+volumes:
+    keys-data:
+      external: false
+    project-data:
+      external: false
+    mysql-data:
+      external: false
+    redis-data:
+      external: false
+        
+        
+        
+        
