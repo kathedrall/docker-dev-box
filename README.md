@@ -29,6 +29,11 @@ Neste ponto você já deve ter o servidor rodando na porta 80 configurada no arq
 Seu codigo estara sendo mapeado via volumes (storage) no docker. Voce ira poder acessa lo pelo terminal do vscode online, ou conectando no container App-Name-php
 O Container App-Name-vscode ja esta com git instalado, facilitando o acesso a repositorios.
 
+Voce tera uma arvore de containers, se acessar o terminal do vscode, voce estara dentro do container App-Name-vscode.
+Caso necessite de ferramentas de php como o composer, via terminal, acesse o container App-Name-php. Ex.: docker exec -it App-Name-php sh
+Ao acessar o container, voce estara no diretorio de trabalho podendo chamar o composer e instalar suas dependencias.
+
+
 ## XDebug no VSCode
 Para debugar no VSCode use as seguintes configurações:
 ```
