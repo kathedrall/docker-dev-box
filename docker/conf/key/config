@@ -1,0 +1,8 @@
+Host <Apelido>
+IdentityFile /config/src/keys/id_rsa 
+IdentitiesOnly yes
+User <user>
+HostkeyAlgorithms +ssh-rsa 
+PubkeyAcceptedAlgorithms +ssh-rsa
+port 22
+
