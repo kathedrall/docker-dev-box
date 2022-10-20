@@ -2,6 +2,8 @@ FROM php:8.1-fpm-alpine
 
 ARG DEBIAN_FRONTEND=noninteractive
 
+RUN apk add git openssh-server openssh-client  --no-cache composer
+
 RUN docker-php-ext-install mysqli \
     && docker-php-ext-install bcmath \  
     && docker-php-ext-install opcache \
@@ -18,8 +20,5 @@ RUN apk add --no-cache $PHPIZE_DEPS \
     && docker-php-ext-enable apcu \
     && docker-php-ext-enable ds
 
-RUN apk add git --no-cache composer
-
-VOLUME "/src"
 
 EXPOSE 9000
