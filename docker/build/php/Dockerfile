@@ -20,5 +20,8 @@ RUN apk add --no-cache $PHPIZE_DEPS \
     && docker-php-ext-enable apcu \
     && docker-php-ext-enable ds
 
+RUN curl -sS https://getcomposer.org/installer | \
+    php -- --install-dir=/usr/bin/ --filename=composer
 
+WORKDIR /src/public
 EXPOSE 9000
